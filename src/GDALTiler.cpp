@@ -209,6 +209,7 @@ GDALTiler::createRasterTile(GDALDataset *dataset, const TileCoordinate &coord) c
  * This code is adapted from that found in `gdalwarp.cpp` implementing the
  * `gdalwarp -ovr` option.
  */
+#include "gdaloverviewdataset.cpp"
 static
 GDALDatasetH
 getOverviewDataset(GDALDatasetH hSrcDS, GDALTransformerFunc pfnTransformer, void *hTransformerArg) {
@@ -308,13 +309,13 @@ GDALTiler::createRasterTile(GDALDataset *dataset, double (&adfGeoTransform)[6]) 
   psWarpOptions->panDstBands =
     (int *) CPLMalloc(sizeof(int) * psWarpOptions->nBandCount );
 
-  psWarpOptions->padfSrcNoDataReal = 
+  psWarpOptions->padfSrcNoDataReal =
     (double *)CPLCalloc(psWarpOptions->nBandCount, sizeof(double));
-  psWarpOptions->padfSrcNoDataImag = 
+  psWarpOptions->padfSrcNoDataImag =
     (double *)CPLCalloc(psWarpOptions->nBandCount, sizeof(double));
-  psWarpOptions->padfDstNoDataReal = 
+  psWarpOptions->padfDstNoDataReal =
     (double *)CPLCalloc(psWarpOptions->nBandCount, sizeof(double));
-  psWarpOptions->padfDstNoDataImag = 
+  psWarpOptions->padfDstNoDataImag =
     (double *)CPLCalloc(psWarpOptions->nBandCount, sizeof(double));
 
   for (short unsigned int i = 0; i < psWarpOptions->nBandCount; ++i) {
@@ -326,7 +327,7 @@ GDALTiler::createRasterTile(GDALDataset *dataset, double (&adfGeoTransform)[6]) 
     psWarpOptions->padfSrcNoDataImag[i] = 0;
     psWarpOptions->padfDstNoDataReal[i] = noDataValue;
     psWarpOptions->padfDstNoDataImag[i] = 0;
-    
+
     psWarpOptions->panDstBands[i] = psWarpOptions->panSrcBands[i] = i + 1;
   }
 
